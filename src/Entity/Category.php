@@ -21,8 +21,11 @@ class Category
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
 
+
+
+
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]
-    private Collection $products;
+    private  $products;
 
     public function __construct()
     {
