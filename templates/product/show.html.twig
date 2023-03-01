@@ -11,9 +11,10 @@
 		</li>
 
 		<li class="breadcrumb-item">
-			<a href="{{path('app_product_index', {'slug': product.category.slug }) }}"></a>
+			<a href="{{path('product_category', {'slug': product.category.slug }) }}">
+				{{product.category.name}}</a>
 		</li>
-		<li class="breadcrumb-item active">{{product.category.name}}</li>
+		<li class="breadcrumb-item active">{{product.name}}</li>
 	</ol>
 	<h1>
 		{{product.name}}

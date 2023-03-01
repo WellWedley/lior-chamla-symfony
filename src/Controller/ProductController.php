@@ -51,7 +51,8 @@ class ProductController extends AbstractController
      */
     public function show(
         $slug,
-        ProductRepository $productRepository
+        ProductRepository $productRepository,
+        UrlGeneratorInterface $urlGenerator
     ) {
 
         $product = $productRepository->findOneBy([
@@ -60,12 +61,18 @@ class ProductController extends AbstractController
         ]);
 
 
+
+
+
         if (!$product) {
             throw $this->createNotFoundException("Le produit demandé n'existe pas !");
         }
 
+
         return $this->render('/product/show.html.twig', [
             'product' => $product,
+            'urlGenerator' => $urlGenerator
+
 
         ]);
     }
@@ -92,7 +99,6 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-
 
             $entityManagerInterface->flush();
             $response = new Response();
