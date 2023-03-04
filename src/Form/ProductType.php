@@ -24,28 +24,22 @@ class ProductType extends AbstractType
                     'placeholder' => 'Tapez le nom du produit',
                 ],
                 'required' => False
-
-
-
             ])
+
             ->add('shortDescription', Assert\TextareaType::class, [
                 'label' => 'Description courte',
                 'attr' => [
                     'placeholder' => 'Tapez une description courte et parlante pour le visiteur',
                 ]
             ])
+
             ->add('price', Assert\MoneyType::class, [
                 'attr' => [
                     'placeholder' => 'Tapez le prix du produit en euros.',
                 ],
                 'divisor' => 100,
                 'required' => False
-
-
-
-
             ])
-
 
             ->add('category', EntityType::class, [ //Ici, on indique que le champs sera tiré d'une entité de la BDD
                 'label' => 'Catégorie',
@@ -53,11 +47,7 @@ class ProductType extends AbstractType
                 'placeholder' => '-- Choisir une catégorie --',
                 'class' => Category::class,/*Ici on indique quelle classe est censée s'afficher pour ce Champs*/
                 'choice_label' => 'name'
-
-
             ])
-
-
 
             ->add('mainPicture', Assert\UrlType::class, [
                 'label' => 'Image du produit',

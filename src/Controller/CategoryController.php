@@ -13,9 +13,35 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use App\Form\Type\PriceType;
 
 class CategoryController extends AbstractController
 {
+
+
+    protected $categoryRepository;
+
+
+    public function __construct(CategoryRepository $categoryRepository)
+    {
+
+        $this->categoryRepository = $categoryRepository;
+    }
+
+
+    public function renderMenuList()
+    {
+        //Aller chercher les catégories dans la BDD ( CategoryRepository)
+
+        $categories = $this->categoryRepository->findAll();
+
+
+        //Renvoyer les résultats sous forme d'une response 
+        return $this->render('category/_menu.html.twig', [
+            'categories' => $categories
+        ]);
+    }
+
 
     /**
      * @Route("/admin/category/create", name ="category_create")
@@ -30,7 +56,7 @@ class CategoryController extends AbstractController
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
             $category->setSlug(strtolower($slugger->slug($category->getName())));
 
@@ -40,7 +66,7 @@ class CategoryController extends AbstractController
 
             //Si le formulaire est soumis et la nouvelle catégori enregistrée
             // Reirection vers la page d'accueil
-            return $this->redirectToRoute('homepage', [
+            return $this->redirectToRoute('product_category', [
                 'category_slug' => $category->getSlug()
             ]);
         }
@@ -76,12 +102,12 @@ class CategoryController extends AbstractController
         //then redirects to homepage's location
 
         $form->handleRequest($request);
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $category->setSlug(strtolower($slugger->slug($category->getName())));
             $entityManager->flush();
 
 
-            return $this->redirectToRoute('homepage', [
+            return $this->redirectToRoute('product_category', [
                 'slug' => $category->getSlug(),
 
             ]);

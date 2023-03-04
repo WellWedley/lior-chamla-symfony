@@ -71,7 +71,6 @@ class ProductController extends AbstractController
             'product' => $product,
             'urlGenerator' => $urlGenerator
 
-
         ]);
     }
 
@@ -80,32 +79,28 @@ class ProductController extends AbstractController
     /**
      * @Route("admin/product/{id}/edit", name="product_edit")
      */
-
     public function edit(
         $id,
         ProductRepository $productRepository,
         Request $request,
         EntityManagerInterface $entityManagerInterface,
-        SluggerInterface $slugger
 
     ) {
 
         //Cherche le produit à modifier selon l'ID
         $product = $productRepository->find($id);
 
-        $form = $this->createForm(
-            ProductType::class,
-            $product,
-
-        );
+        $form = $this
+            ->createForm(
+                ProductType::class,
+                $product
+            );
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
             $entityManagerInterface->flush();
-
-
 
             return $this->redirectToRoute('product_show', [
                 'category_slug' => $product->getCategory()->getSlug(),
@@ -147,17 +142,19 @@ class ProductController extends AbstractController
             $entityManager->persist($product);
             $entityManager->flush();
 
-            return $this->redirectToRoute('product_show', [
-                'category_slug' => $product->getCategory()->getSlug(),
-                'slug' => $product->getSlug()
-            ]);
-        };
+            return
+                $this->redirectToRoute('product_show', [
+                    'category_slug' => $product->getCategory()->getSlug(),
+                    'slug' => $product->getSlug()
+                ]);
+        }
 
 
         $formView = $form->createView();
 
-        return $this->render('product/create.html.twig', [
-            'formView' => $formView
-        ]);
+        return
+            $this->render('product/create.html.twig', [
+                'formView' => $formView
+            ]);
     }
 }

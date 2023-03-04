@@ -53,19 +53,23 @@ class AppFixtures extends Fixture
                 $response = file_get_contents($apiUrl, False);
                 $data = json_decode($response, true);
 
-                $manager->persist($category);
-                $product->setName("Produit n p $p")
+                $manager
+                    ->persist($category);
+
+                $product
+                    ->setName("Produit n p $p")
                     ->setPrice(mt_rand(1030, 26300))
                     ->setSlug(strToLower($this->slugger->slug($product->getName())))
                     ->setCategory($category)
                     ->setMainPicture($data['hits'][rand(0, 15)]['largeImageURL'])
-
                     ->setShortDescription("Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam dignissimos placeat recusandae sit eius dolores tempore, commodi sunt a laborum laboriosam, accusantium non mollitia? Alias aspernatur quae quam rerum optio!
                     ");
 
-                $manager->persist($product);
+                $manager
+                    ->persist($product);
             }
         }
-        $manager->flush();
+        $manager
+            ->flush();
     }
 }

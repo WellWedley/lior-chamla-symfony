@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Form\Type\PriceType;
+namespace App\Form\Type;
+
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,7 +17,8 @@ class PriceType extends AbstractType
             return;
         } else {
 
-            $builder->addModelTransformer(new CentimesTransformer);
+            $builder
+                ->addModelTransformer(new CentimesTransformer);
         }
     }
 
