@@ -2,20 +2,20 @@
 
 namespace App\Controller;
 
-use App\Entity\Category;
 use App\Entity\Product;
 use App\Form\ProductType;
+use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Repository\ProductRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 
 class ProductController extends AbstractController
 {
@@ -62,8 +62,6 @@ class ProductController extends AbstractController
 
 
 
-
-
         if (!$product) {
             throw $this->createNotFoundException("Le produit demandé n'existe pas !");
         }
@@ -88,20 +86,25 @@ class ProductController extends AbstractController
         ProductRepository $productRepository,
         Request $request,
         EntityManagerInterface $entityManagerInterface,
+        SluggerInterface $slugger
 
     ) {
 
         //Cherche le produit à modifier selon l'ID
         $product = $productRepository->find($id);
 
-        $form = $this->createForm(ProductType::class, $product);
+        $form = $this->createForm(
+            ProductType::class,
+            $product,
+
+        );
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
             $entityManagerInterface->flush();
-            $response = new Response();
+
 
 
             return $this->redirectToRoute('product_show', [
@@ -138,7 +141,7 @@ class ProductController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $product->setSlug(strtolower($slugger->slug($product->getName())));
 
             $entityManager->persist($product);
