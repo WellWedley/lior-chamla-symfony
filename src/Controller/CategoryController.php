@@ -62,7 +62,7 @@ class CategoryController extends AbstractController
 
             $entityManager->persist($category);
             $entityManager->flush();
-
+            
 
             //Si le formulaire est soumis et la nouvelle catégori enregistrée
             // Reirection vers la page d'accueil
@@ -103,14 +103,22 @@ class CategoryController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $category->setSlug(strtolower($slugger->slug($category->getName())));
-            $entityManager->flush();
+
+            $category
+                ->setSlug(strtolower($slugger->slug($category->getName())));
+
+            $entityManager
+                ->flush();
 
 
-            return $this->redirectToRoute('product_category', [
-                'slug' => $category->getSlug(),
+            return $this
+                ->redirectToRoute(
+                    'product_category',
+                    [
+                        'slug' => $category->getSlug(),
 
-            ]);
+                    ]
+                );
         }
 
         //Creating form's view 

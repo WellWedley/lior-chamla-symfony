@@ -55,23 +55,26 @@ class ProductController extends AbstractController
         UrlGeneratorInterface $urlGenerator
     ) {
 
-        $product = $productRepository->findOneBy([
-            'slug' => $slug,
-
-        ]);
-
-
+        $product = $productRepository
+            ->findOneBy(
+                [
+                    'slug' => $slug,
+                ]
+            );
 
         if (!$product) {
-            throw $this->createNotFoundException("Le produit demandé n'existe pas !");
+            throw $this
+                ->createNotFoundException("Le produit demandé n'existe pas !");
         }
 
-
-        return $this->render('/product/show.html.twig', [
-            'product' => $product,
-            'urlGenerator' => $urlGenerator
-
-        ]);
+        return $this
+            ->render(
+                '/product/show.html.twig',
+                [
+                    'product' => $product,
+                    'urlGenerator' => $urlGenerator
+                ]
+            );
     }
 
 
@@ -91,10 +94,7 @@ class ProductController extends AbstractController
         $product = $productRepository->find($id);
 
         $form = $this
-            ->createForm(
-                ProductType::class,
-                $product
-            );
+            ->createForm(ProductType::class, $product);
 
         $form->handleRequest($request);
 
@@ -102,10 +102,14 @@ class ProductController extends AbstractController
 
             $entityManagerInterface->flush();
 
-            return $this->redirectToRoute('product_show', [
-                'category_slug' => $product->getCategory()->getSlug(),
-                'slug' => $product->getSlug()
-            ]);
+            return $this
+                ->redirectToRoute(
+                    'homepage',
+                    [
+                        'category_slug' => $product->getCategory()->getSlug(),
+                        'slug' => $product->getSlug()
+                    ]
+                );
         }
 
 
@@ -132,21 +136,32 @@ class ProductController extends AbstractController
 
 
         $product = new Product;
-        $form = $this->createForm(ProductType::class, $product);
+        $form = $this
+            ->createForm(ProductType::class, $product);
 
-        $form->handleRequest($request);
+        $form
+            ->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $product->setSlug(strtolower($slugger->slug($product->getName())));
 
-            $entityManager->persist($product);
-            $entityManager->flush();
+            $product
+                ->setSlug(strtolower($slugger->slug($product->getName())));
 
-            return
-                $this->redirectToRoute('product_show', [
-                    'category_slug' => $product->getCategory()->getSlug(),
-                    'slug' => $product->getSlug()
-                ]);
+            $entityManager
+                ->persist($product);
+
+            $entityManager
+                ->flush();
+
+
+            return $this
+                ->redirectToRoute(
+                    'product_show',
+                    [
+                        'category_slug' => $product->getCategory()->getSlug(),
+                        'slug' => $product->getSlug()
+                    ]
+                );
         }
 
 
